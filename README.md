@@ -1,7 +1,22 @@
 # Social_Graph
-This is social networking research 👥. <br/>
-Purpose: To find, cluster and classify the strong connectivity components in a graph of friends from a social network using Python and Gephi. <br/>
+This is social networking research 👥. <br/><br/>
+[Paresing from social network](#parsing)<br/>
+[Build graph of friends](#building)<br/>
+[Graph visualization](#vis)<br/>
+[Graph analyzing](#analyzing)<br/>
+[Strongly connected components](#strong)<br/>
+[Algorithm description and correctness](#algo)<br/>
+[Histograms](#histogram)<br/>
+
+Purpose: To find, cluster and classify the strong connectivity components in a graph of friends from a social network using Python and Gephi. <br/> <br/> <br/>
+
+
+<a name="parsing"></a>
+### Paresing from social network
 In order to parse your friends, we've generated an easy-to-analyse json file. The following is one version of parsing VKontakte.
+
+
+
 ```python
 import requests
 import json
@@ -17,7 +32,8 @@ for i in range(13):
 with open('ids.json', 'w') as f:
     f.write(json.dumps({'ids': all_id}))
 ```
-
+<a name="building"></a> 
+### Build graph of friends
 Next the json was converted into a handy two files. One has a list of all the vertices of the graph, the other describes an edge on each line, with two vertices. Next the code that forms the text file.
 ```python
 txt = "test.txt"
@@ -44,15 +60,23 @@ for i in f:
 print(arr)
 
 ```
+
+<a name="vis"></a> 
+### Graph visualization
 Now a table of vertices and edges has been generated in an xlsx file for further analysis. The table generation code will be given below, as it is quite similar when solving the two problems. These tables can now be exported to gephi. This is a graph visualizer. This is what the whole graph looks like. Immediately you can notice a few giant vertices (the size of a graph vertex is proportional to its degree). These are the pages of the two teachers https://vk.com/id238683 and https://vk.com/id133883. They are closely related to the organization of various extracurricular activities in the school, and consequently communicate a lot with all classes in the school, so there are so many different connections. Janina Yadova, for example, gave us the opportunity to get into this internship. 
 ![image](https://user-images.githubusercontent.com/31445859/172258062-c489ede5-cd30-4a30-ae55-b4eb10cb6f66.png)
+
 
 Immediately you can see that the nodes with the most connections are usually the teachers, and thus it is not difficult to distinguish them from the general mass. 
 Now I have done a little investigation with my pens. As a physical model is applied to the graph, it highlights communities, they look like clustered vertices. I chose a small sub-graph, and characterised each group by contacting some of its members and finding out how they were connected to our school.
 ![image](https://user-images.githubusercontent.com/31445859/172258080-7ed0d39b-d37e-4a63-89bd-7c8b51cc42f8.png)
 
+<a name="analyzing"></a> 
+### Graph analyzing
 A person's class I determined directly by asking everyone on facebook, under the pretext of research. And so, under group 1 in the photo is the community of current grades 11-1 and 11-2. They are so closely related, as they were intermingled over the course of their studies. That is to say, the former when we moved from grade 7 to 8, we were roughly sorted by interests (maths or physics), but the old connections remained. And by and large, the two classes are pretty close, speaking as a student of one of them. Under numbers 2 is 11-3 grade, 3 is 11-5 grade, 4 is 11-7 and in question are 3 people from 11-4. Their class has sparred badly as many of the pages are either unsubscribed to the group or closed. As a result, only a few people are surrounded by other classes from the parallel, and the rest are either smeared amongst other classes or are not in the graph at all. As you can see, the communities are formed quite clearly, and manually separating them is not a problem. 
 
+<a name="strong"></a> 
+### Strongly connected components
 But it's rather long and impractical to allocate everything by hand. Therefore, an algorithm was invented for selecting a class based on the id of one of its members. That is, the component of strong relatedness to which the member in question belongs is selected. Here is the code that does this.
 ```python
 import requests
@@ -149,11 +173,14 @@ for i in ans:
 
 
 ```
+<a name="algo"></a> 
+### Algorithm description and correctness
 To describe the algorithm in a nutshell, we simply take all vertices with which the vertex in question is connected, and then distinguish the first 30 members that are closely related to each other. But also this algorithm is applied to several other vertices from the friends of the considered one, in order to exclude false connectivity components, with which the considered vertex is connected by just a couple of edges.
 So, I applied this algorithm to my page, and got the following result. It is 90% correct. But also our class teacher (although it may be considered as a class member), and a couple of people from 11-2, as I said before that we have close social ties with them.
 ![image](https://user-images.githubusercontent.com/31445859/172258100-a2ae4a3e-0c3c-456b-a5cb-fd99a92a015f.png)
 
-
+<a name="histogram"></a> 
+### Histograms
 Next, a histogram has been made. I now attach the code that generates the xlsx table I referred to above.
 ```python
 from openpyxl import load_workbook
