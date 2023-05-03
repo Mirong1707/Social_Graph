@@ -1,5 +1,5 @@
 # Social_Graph
-Что бы спарсить друзей, мы сформировали удобный для анализа json файл. Далее одна из версий парсинга вк.
+In order to parse your friends, we've generated an easy-to-analyse json file. The following is one version of parsing facebook.
 ```python
 import requests
 import json
@@ -16,7 +16,7 @@ with open('ids.json', 'w') as f:
     f.write(json.dumps({'ids': all_id}))
 ```
 
-Далее json был преобразован в удобные два файла. В одном список всех вершин графа, во втором на каждой строчке описывается ребро, двумя вершинами.Далее код, формирующий текстовый файл.
+Next the json was converted into a handy two files. One has a list of all the vertices of the graph, the other describes an edge on each line, with two vertices. Next the code that forms the text file.
 ```python
 txt = "test.txt"
 f = open(txt).read()
@@ -42,16 +42,16 @@ for i in f:
 print(arr)
 
 ```
-Теперь для дальнейшего анализы была сформирована таблица вершин и ребер в xlsx файле. Код формирования таблицы будет приведен далее, так как он довольно схож при решении двух задач. Теперь эти таблицы можно экспортировать в gephi. Это визуализатор графов. Вот так выглядит весь граф целиком. Сразу можно заметить Несколько вершин гигантов (размер вершины графа пропорционален её степени). Это страницы двух учителей https://vk.com/id238683 и  https://vk.com/id133883. Они тесно связаны с организацией различной внеурочной деятельности в школе, и следовательно много общаются со всеми классами в школе, поэтому различных связей так много. Например Янина Ядова дала нам возможность попасть на эту стажировку. 
+Now a table of vertices and edges has been generated in an xlsx file for further analysis. The table generation code will be given below, as it is quite similar when solving the two problems. These tables can now be exported to gephi. This is a graph visualizer. This is what the whole graph looks like. Immediately you can notice a few giant vertices (the size of a graph vertex is proportional to its degree). These are the pages of the two teachers https://vk.com/id238683 and https://vk.com/id133883. They are closely related to the organization of various extracurricular activities in the school, and consequently communicate a lot with all classes in the school, so there are so many different connections. Janina Yadova, for example, gave us the opportunity to get into this internship. 
 ![image](https://user-images.githubusercontent.com/31445859/172258062-c489ede5-cd30-4a30-ae55-b4eb10cb6f66.png)
 
-Сразу можно заметить, что вершины с наибольшим количеством связей обычно учителя, и таким образом их не сложно выделить из общей массы. 
-Теперь я провел небольшое расследование ручками. Поскольку к графу применяется физическая модель, то он выделяет сообщества, они похожи на сгруппировавшиеся в кучку вершины. Я выбрал небольшой подграф, и характеризовал каждую группу, списавшись с некоторыми её участниками, и узнав, как они связаны с нашей школой.
+Immediately you can see that the nodes with the most connections are usually the teachers, and thus it is not difficult to distinguish them from the general mass. 
+Now I have done a little investigation with my pens. As a physical model is applied to the graph, it highlights communities, they look like clustered vertices. I chose a small sub-graph, and characterised each group by contacting some of its members and finding out how they were connected to our school.
 ![image](https://user-images.githubusercontent.com/31445859/172258080-7ed0d39b-d37e-4a63-89bd-7c8b51cc42f8.png)
 
-Класс человека я определял напрямую, спрашивая у всех в вк, под предлогом исследования. И так, под группой 1 на фото представлено сообщество нынешних классов 11-1 и 11-2. Они так тесно связаны, так как перемешивались по ходу обучения. То есть бывший при переходе из 7 класса в 8, нас грубо говоря отсортировали по интересам(математика или физика), но старые связи остались. Да и в общем, эти два класса довольно тесно общаются между собой, говорю как ученик одного из них. Под номеров 2 - 11-3 класс, 3 - 11-5 класс, 4 - 11-7, а под вопросом находятся 3 человека из 11-4. Их класс плохо спарсился, так как многие страницы либо не подписаны на группу, либо закрыты. В итоге всего несколько человек находятся в окружении других классов из параллели, и остальные либо размазаны среди других классов, либо их вообще нет в графе. Как можно заметить, сообщества формируются довольно четко, и вручную их разделить не составляет проблем. 
+A person's class I determined directly by asking everyone on facebook, under the pretext of research. And so, under group 1 in the photo is the community of current grades 11-1 and 11-2. They are so closely related, as they were intermingled over the course of their studies. That is to say, the former when we moved from grade 7 to 8, we were roughly sorted by interests (maths or physics), but the old connections remained. And by and large, the two classes are pretty close, speaking as a student of one of them. Under numbers 2 is 11-3 grade, 3 is 11-5 grade, 4 is 11-7 and in question are 3 people from 11-4. Their class has sparred badly as many of the pages are either unsubscribed to the group or closed. As a result, only a few people are surrounded by other classes from the parallel, and the rest are either smeared amongst other classes or are not in the graph at all. As you can see, the communities are formed quite clearly, and manually separating them is not a problem. 
 
-Но выделять все руками довольно долго и не практично. Поэтому был придуман алгоритм выделения класса по id одного его участника. То есть выделяется компонента сильной связанности, которой принадлежит рассматриваемый участник. Вот код, который это выполняет.
+But it's rather long and impractical to allocate everything by hand. Therefore, an algorithm was invented for selecting a class based on the id of one of its members. That is, the component of strong relatedness to which the member in question belongs is selected. Here is the code that does this.
 ```python
 import requests
 import json
@@ -147,12 +147,12 @@ for i in ans:
 
 
 ```
-Если описать алгоритм в двух словах, то мы просто берем все вершины, с которыми связаны рассматриваемая, а дальше выделяем первых 30 участников, которые тесно связаны между собой. Но так же этот алгоритм применяется для нескольких других вершин из друзей рассматриваемых, для того чтобы исключить ложные компоненты связанности, с которыми рассматриваемая вершина связана всего парой ребр.
-И так, я применил этот алгоритм на своей странице, и получил следующий результат. Он на 90 процентов верный. Но так же тут выведен наш классный руководитель(хотя может и можно считать его за участника класса), и пара людей из 11-2, так как я уже говорил, что с ними у нас тесные социальные связи.
+To describe the algorithm in a nutshell, we simply take all vertices with which the vertex in question is connected, and then distinguish the first 30 members that are closely related to each other. But also this algorithm is applied to several other vertices from the friends of the considered one, in order to exclude false connectivity components, with which the considered vertex is connected by just a couple of edges.
+So, I applied this algorithm to my page, and got the following result. It is 90% correct. But also our class teacher (although it may be considered as a class member), and a couple of people from 11-2, as I said before that we have close social ties with them.
 ![image](https://user-images.githubusercontent.com/31445859/172258100-a2ae4a3e-0c3c-456b-a5cb-fd99a92a015f.png)
 
 
-Далее была сделана гистограмма. Теперь я прикладываю код, который формирует xlsx таблицу, на что я ссылался выше.
+Next, a histogram has been made. I now attach the code that generates the xlsx table I referred to above.
 ```python
 from openpyxl import load_workbook
 
@@ -215,11 +215,11 @@ print(ans1)
 wb.save('t1.xlsx')
 
 ```
-В построенной таблице хранятся два столбца. В первом количество связей, а во втором количество вершин, с таким количеством связей. По этим данным был построен график.
+The constructed table stores two columns. The first has the number of links and the second the number of nodes with that number of links. A graph has been plotted using this data.
 ![image](https://user-images.githubusercontent.com/31445859/172258118-6ea3dcba-9373-4498-a374-bda3e10d38db.png)
 
-Сложно рассуждать почему распределение именно такое. Особенно странно что так много вершин с малым количеством связей. На мой взгляд это может объясняется тем, что люди, интересующиеся нашей школой подписываются на группы. Но интерес редко перерастает в то, что человек либо его дети сюда поступают, а от группы отписаться забывают. Стоит помнить, что на графике отсутствует первая точка, для 0 связей, где порядка 2500 вершин, что подтверждает вышеописанную теорию
-Так же было проведено исследование зависимости возраста участников группы. Медот формирования таблицы тот же. Вот получившийся график зависимости. Понятно, что он не точен, так как многие указывают неверный возраст (более 100 лет) но в средней зависимость имеет смысл.
+It is hard to speculate why the distribution is the way it is. It is especially strange that there are so many nodes with so few connections. In my opinion it can be explained by the fact that people interested in our school sign up for groups. But the interest rarely develops into the fact that a person or his/her children come here and they forget to unsubscribe from the group. It is worth remembering that the first point is missing on the graph, for 0 connections, where there are about 2500 nodes, which confirms the above theory
+In the same way a study of the age dependence of the participants in the group was conducted. The method of forming the table is the same. Here is the resulting graph of dependence. It is clear, that it is not exact, as many specify incorrect age (more than 100 years), but in the average dependence makes sense.
 ![image](https://user-images.githubusercontent.com/31445859/172258133-60b67dc4-e6ac-4ea5-99d9-7444517c686d.png)
 
-На этом можно считать исследование завершенным. Спасибо за внимание.
+This concludes the study. Thank you for your attention.
