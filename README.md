@@ -11,6 +11,7 @@ This is social networking research 👥. <br/><br/>
 Purpose: To find, cluster and classify the strong connectivity components in a graph of friends from a social network using Python and Gephi. <br/> <br/> <br/>
 
 
+
 <a name="parsing"></a>
 ### Paresing from social network
 In order to parse your friends, we've generated an easy-to-analyse json file. The following is one version of parsing VKontakte.
